@@ -1,0 +1,27 @@
+
+Create a multi-az ROSA cluster using rosa create cluster --interactive
+
+Create a new vpc
+create six subnets in that vpc, 2 in each az (a, b, c)
+create a route for 0.0.0.0/0 to 10.0.0/16 
+
+enable dns
+
+
+
+rosa create cluster --cluster-name fsx-rosa --sts --enable-dns-hostnames 
+--role-arn arn:aws:iam::789379831725:role/fsx-Installer-Role 
+--support-role-arn arn:aws:iam::789379831725:role/fsx-Support-Role 
+--controlplane-iam-role arn:aws:iam::789379831725:role/fsx-ControlPlane-Role 
+--worker-iam-role arn:aws:iam::789379831725:role/fsx-Worker-Role 
+--operator-roles-prefix fsx-rosa-x3j0 
+--oidc-config-id 23s9aimg09jqgss6910rj2s59sq9ept2 
+--multi-az --region us-east-2 
+--version 4.13.4 
+--replicas 3 
+--compute-machine-type m5.xlarge 
+--machine-cidr 10.0.0.0/16 
+--service-cidr 172.30.0.0/16 
+--pod-cidr 10.128.0.0/16 
+--host-prefix 23 
+--subnet-ids subnet-0265366a0949984a3,subnet-0215e0897a3c0019b,subnet-027c73952d42c33b3,subnet-0b8eaf67b1ec7f641,subnet-0e204dfdfa2705b28,subnet-06ee8dee1a4c581 23

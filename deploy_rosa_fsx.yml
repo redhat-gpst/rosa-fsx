@@ -1,0 +1,88 @@
+---
+- name: Create AWS VPC
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Create VPC
+      ec2_vpc:
+        state: present
+        region: "{{ aws_region }}"
+        cidr_block: "{{ vpc_cidr }}"
+        resource_tags:
+          Name: "{{ vpc_name }}"
+      register: vpc
+
+    - name: Create Subnets
+      ec2_vpc_subnet:
+        state: present
+        region: "{{ aws_region }}"
+        vpc_id: "{{ vpc.vpc.id }}"
+        cidr: "{{ item.cidr }}"
+        az: "{{ aws_region }}{{ item.az }}"
+        assign_public_ip: yes  
+        map_public: yes       
+        resource_tags:
+          Name: "Subnet-{{ item.az }}"
+      loop:
+        - { cidr: "10.0.1.0/24", az: "a" }
+        - { cidr: "10.0.2.0/24", az: "a" }
+        - { cidr: "10.0.3.0/24", az: "b" }
+        - { cidr: "10.0.4.0/24", az: "b" }
+        - { cidr: "10.0.5.0/24", az: "c" }
+        - { cidr: "10.0.6.0/24", az: "c" }
+      
+    - name: Create Route
+      ec2_vpc_route:
+        state: present
+        region: "{{ aws_region }}"
+        vpc_id: "{{ vpc.vpc.id }}"
+        route_table_id: "{{ item.route_table.id }}"
+        dest: "0.0.0.0/0"
+        gateway_id: "local"
+      loop: "{{ vpc.vpc.route_tables }}"
+      loop_control:
+        label: "{{ item.tags.Name }}"
+      when: item.tags.Name == 'Main Route Table'
+
+    - name: Extract Subnet IDs
+      set_fact:
+        subnet_ids: "{{ subnet_ids | default([]) + [item.subnet.id] }}"
+      loop: "{{ subnets_result.results }}"
+
+    - name: Get Role ARNs
+      ec2_instance_info:
+        region: "{{ aws_region }}"
+        filters:
+          "tag:Name": "fsx-Installer-Role"
+      register: role_info
+
+    - name: Get Support Role ARNs
+      ec2_instance_info:
+        region: "{{ aws_region }}"
+        filters:
+          "tag:Name": "fsx-Support-Role"
+      register: support_role_info
+
+    - name: Get Control Plane Role ARNs
+      ec2_instance_info:
+        region: "{{ aws_region }}"
+        filters:
+          "tag:Name": "fsx-ControlPlane-Role"
+      register: controlplane_role_info
+
+    - name: Get Worker Role ARNs
+      ec2_instance_info:
+        region: "{{ aws_region }}"
+        filters:
+          "tag:Name": "fsx-Worker-Role"
+      register: worker_role_info
+
+    - name: Get OIDC Configurations
+      ec2_vpc_aws_auth_info:
+        region: "{{ aws_region }}"
+      register: oidc_config
+
+    - debug:
+        var: vpc
