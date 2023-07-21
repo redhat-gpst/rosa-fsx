@@ -1,7 +1,10 @@
+---
+cluster_name: fsx-rosa
 aws_region: "us-east-2"
 vpc_name: "rosa-fsx-vpc"
 vpc_cidr: "10.0.0.0/16"
 version: 4.13.4
+operator_roles_prefix: "fsx-rosa-{{ oidc_config_id.stdout }}"
 
 # Subnet variables
 subnets:

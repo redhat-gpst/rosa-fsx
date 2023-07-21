@@ -15,7 +15,6 @@ rosa create cluster --cluster-name fsx-rosa --sts --enable-dns-hostnames
 --controlplane-iam-role arn:aws:iam::789379831725:role/fsx-ControlPlane-Role 
 --worker-iam-role arn:aws:iam::789379831725:role/fsx-Worker-Role 
 --operator-roles-prefix fsx-rosa-x3j0 
---oidc-config-id 23s9aimg09jqgss6910rj2s59sq9ept2 
 --multi-az --region us-east-2 
 --version 4.13.4 
 --replicas 3 
