@@ -84,5 +84,14 @@
         region: "{{ aws_region }}"
       register: oidc_config
 
+     - name: Create Rosa Cluster Command
+      ansible.builtin.template:
+        src: rosa_create_cluster.j2
+        dest: ./rosa_create_cluster.sh
+        mode: '0755'
+
+    - name: Run ROSA Cluster Creation Script
+      ansible.builtin.command: ./rosa_create_cluster.sh
+
     - debug:
         var: vpc
