@@ -47,6 +47,9 @@
         aws_secret_key: "{{ aws_secret_access_key }}"
       loop: "{{ subnets }}"
       register: subnets_result
+
+    - debug:
+        var: subnets_result
          
     - name: Create Internet Gateway
       amazon.aws.ec2_vpc_igw:
@@ -132,13 +135,20 @@
       debug:
         var: worker_iam_role 
 
+
     - name: Generate GUID
       shell: "date +%s | sha256sum | base64 | head -c 4"
-      register: oidc_config_id
+      register: guid
 
     - name: Generate OIDC
       shell: "date +%s | sha256sum | base64 | head -c 32"
       register: oidc_config_id
+
+    - debug:
+        var: guid.stdout
+
+    - debug:
+        var: oidc_config_id.stdout
 
     - name: Set Operator Roles Prefix
       set_fact:
