@@ -1,13 +1,23 @@
 # requirements:
 # ansible-galaxy collection install amazon.aws
 ---
-- name: Create AWS VPC
-  hosts: localhost
+- name: Create AWS dual-AZ environment for ROSA FSx
   gather_facts: no
+  hosts: all
+  become: true
+  become_user: rosa
   vars_files:
     - vars.yaml
   tasks:
-    - name: Create VPC
+    - name: Install boto3 package
+      pip:
+        name: boto3
+        state: present
+        executable: pip3
+        extra_args: --user
+      become_user: rosa
+
+    - name: Crete VPC
       amazon.aws.ec2_vpc_net:
         state: present
         name: "{{ vpc_name }}"
@@ -18,9 +28,6 @@
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
       register: vpc
-
-    - debug:
-        var: vpc
 
     - name: Set VPC ID
       set_fact:
@@ -34,14 +41,12 @@
         cidr: "{{ item.cidr }}"
         az: "{{ aws_region}}{{ item.az }}"
         resource_tags:
-          Name: "Subnet-{{ item.az }}"
-        # assign_public_ip: yes  # This enables public IP assignment for the subnet
-        map_public: yes        # This enables DNS support for the subnet
+          Name: "{{ cluster_name }}-subnet-{{ item.az }}"
+        map_public: yes 
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
       loop: "{{ subnets }}"
       register: subnets_result
-
          
     - name: Create Internet Gateway
       amazon.aws.ec2_vpc_igw:
@@ -74,9 +79,6 @@
         aws_secret_key: "{{ aws_secret_access_key }}"
       register: main_route_table
 
-    - debug:
-        var: main_route_table
-  
     - name: Add Internet Gateway Route
       amazon.aws.ec2_vpc_route_table:
         vpc_id: "{{ vpc_id }}"
@@ -87,62 +89,56 @@
         region: "{{ aws_region }}"
         aws_access_key: "{{ aws_access_key_id }}"
         aws_secret_key: "{{ aws_secret_access_key }}"
-    
-    - name: Extract Subnet IDs
-      set_fact:
-        subnet_ids: "{{ subnet_ids | default([]) + [item.subnet.id] }}"
-      loop: "{{ subnets_result.results }}"
+     
+    # - name: Extract Subnet IDs
+    #   set_fact:
+    #     subnet_ids: "{{ subnet_ids | default([]) + [item.subnet.id] | regex_search ('subnet-.*) }}"
+    #   loop: "{{ subnets_result.results }}"
 
-    # - name: Create account Roles
-    #   shell: rosa create account-roles
-    #   register: role_info
-
-    
-
-    - name: Get Support Role ARNs
-      amazon.aws.ec2_instance_info:
-        region: "{{ aws_region }}"
-        filters:
-          "tag-key": "ManagedOpenShift"
-        aws_access_key: "{{ aws_access_key_id }}"
-        aws_secret_key: "{{ aws_secret_access_key }}"
-      register: support_role_info
+    - name: Extract All Subnet IDs
+      ansible.builtin.set_fact:
+        subnet_ids: "{{ subnets_result.results | map(attribute='item.subnet.id') | list }}"
 
     - debug:
-        var: support_role_info
+        var: subnet_ids
 
-    - name: Get Support Role ARNs
-      amazon.aws.ec2_instance_info:
-        region: "{{ aws_region }}"
-        filters:
-          "tag:Name": "fsx-Support-Role"
-        aws_access_key: "{{ aws_access_key_id }}"
-        aws_secret_key: "{{ aws_secret_access_key }}"
-      register: support_role_info
+    - name: Format Subnet IDs as Comma-Separated List
+      ansible.builtin.set_fact:
+        subnet_ids_csv: "{{ subnet_ids | join(',') }}"
 
-  
+    - debug:
+        var: subnet_ids_csv
 
-    - name: Get Control Plane Role ARNs
-      amazon.aws.ec2_instance_info:
-        region: "{{ aws_region }}"
-        filters:
-          "tag:Name": "fsx-ControlPlane-Role"
-        aws_access_key: "{{ aws_access_key_id }}"
-        aws_secret_key: "{{ aws_secret_access_key }}"
-      register: controlplane_role_info
+    - name: Create account Roles
+      shell: /usr/local/bin/rosa create account-roles --mode auto
+      register: role_info
 
-    - name: Get Worker Role ARNs
-      amazon.aws.ec2_instance_info:
-        region: "{{ aws_region }}"
-        filters:
-          "tag:Name": "fsx-Worker-Role"
-        aws_access_key: "{{ aws_access_key_id }}"
-        aws_secret_key: "{{ aws_secret_access_key }}"
-      register: worker_role_info
+    - name: Set Variables from Rosa Output
+      ansible.builtin.set_fact:
+        installer_role_arn: "{{ role_info.stdout| regex_search('arn.*Installer-Role') }}"
+        support_role_arn: "{{ role_info.stdout| regex_search('arn.*Support-Role') }}"
+        controlplane_iam_role: "{{ role_info.stdout | regex_search('arn.*ControlPlane-Role') }}"
+        worker_iam_role: "{{ role_info.stdout | regex_search('arn.*Worker-Role$') }}"
+
+    - name: Debug support_role_arn
+      debug:
+        var: support_role_arn
+
+    - name: Debug controlplane_iam_role
+      debug:
+        var: controlplane_iam_role
+
+    - name: Debug worker_iam_role
+      debug:
+        var: worker_iam_role 
 
     - name: Generate GUID
       shell: "date +%s | sha256sum | base64 | head -c 4"
-      register: guid
+      register: oidc_config_id
+
+    - name: Generate OIDC
+      shell: "date +%s | sha256sum | base64 | head -c 32"
+      register: oidc_config_id
 
     - name: Set Operator Roles Prefix
       set_fact:

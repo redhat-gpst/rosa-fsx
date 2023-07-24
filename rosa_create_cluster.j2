@@ -1,11 +1,11 @@
 rosa create cluster --cluster-name {{ cluster_name }} \
   --sts \
   --enable-dns-hostnames \
-  --role-arn {{ role_arn }} \
+  --role-arn {{ installer_role_arn }} \
   --support-role-arn {{ support_role_arn }} \
   --controlplane-iam-role {{ controlplane_iam_role }} \
   --worker-iam-role {{ worker_iam_role }} \
-  --operator-roles-prefix {{ operator_roles_prefix }}-x3j0 \
+  --operator-roles-prefix {{ operator_roles_prefix }}-{{ guid }} \
   --oidc-config-id {{ oidc_config_id }} \
   --multi-az \
   --region {{ region }} \
