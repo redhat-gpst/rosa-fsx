@@ -132,9 +132,9 @@
       debug:
         var: worker_iam_role 
 
-    - name: Generate GUID
-      shell: "date +%s | sha256sum | base64 | head -c 4"
-      register: guid
+    # - name: Generate GUID
+    #   shell: "date +%s | sha256sum | base64 | head -c 4"
+    #   register: guid
 
     - name: Generate OIDC
       shell: "date +%s | sha256sum | base64 | head -c 32"
@@ -143,9 +143,6 @@
     - name: Set Operator Roles Prefix
       set_fact:
         operator_roles_prefix: "fsx-rosa-{{ guid }}"
-
-    - debug:
-        var: guid.stdout
 
     - debug:
         var: oidc_config_id.stdout
