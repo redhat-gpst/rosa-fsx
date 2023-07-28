@@ -56,14 +56,6 @@
       set_fact:
         combined_subnet_ids: "{{ subnet_ids_list | join(',') }}"
 
-    - debug:
-        var: subnet_ids_list
-
-    - debug:
-        var: combined_subnet_ids
-
-
-       
     - name: Create Internet Gateway
       amazon.aws.ec2_vpc_igw:
         vpc_id: "{{ vpc_id }}"
@@ -110,9 +102,6 @@
       shell: /usr/local/bin/rosa create account-roles --mode auto
       register: role_info
 
-    - debug:
-        var: role_info
-
     - name: Set Variables from Account Roles Output
       ansible.builtin.set_fact:
         installer_role_arn: "{{ role_info.stdout| regex_search('arn.*Installer-Role') }}"
@@ -120,32 +109,16 @@
         controlplane_iam_role: "{{ role_info.stdout | regex_search('arn.*ControlPlane-Role') }}"
         worker_iam_role: "{{ role_info.stdout | regex_search('arn.*Worker-Role') }}"
 
-    - name: Debug support_role_arn
+    - name: Debug role arns
       debug:
+        var: installer_role_arn
         var: support_role_arn
-
-    - name: Debug controlplane_iam_role
-      debug:
         var: controlplane_iam_role
-
-    - name: Debug worker_iam_role
-      debug:
         var: worker_iam_role 
 
-    # - name: Generate GUID
-    #   shell: "date +%s | sha256sum | base64 | head -c 4"
-    #   register: guid
-
-    - name: Generate OIDC
-      shell: "date +%s | sha256sum | base64 | head -c 32"
-      register: oidc_config_id
-
-    - name: Set Operator Roles Prefix
+    - name: Generate GUID
       set_fact:
-        operator_roles_prefix: "fsx-rosa-{{ guid }}"
-
-    - debug:
-        var: oidc_config_id.stdout
+        guid:  "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_lowercase', 'digits'], length=4) }}"
 
     - name: Set Operator Roles Prefix
       set_fact:

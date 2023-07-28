@@ -6,7 +6,6 @@ rosa create cluster --cluster-name {{ cluster_name }} \
   --controlplane-iam-role {{ controlplane_iam_role }} \
   --worker-iam-role {{ worker_iam_role }} \
   --operator-roles-prefix {{ operator_roles_prefix }} \
-  --oidc-config-id {{ oidc_config_id.stdout }} \
   --multi-az \
   --region {{ aws_region }} \
   --version {{ version }} \
