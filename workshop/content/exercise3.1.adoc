@@ -1,0 +1,39 @@
+[[Install-Trident-CSI-Driver]]
+== Install and configure the Trident CSI driver for ROSA cluster
+We will be installing the Trident CSI driver in the Openshift “trident” namespace. To create the “trident” namespace, open a command line interface (CLI) on your computer and login to the ROSA cluster using the OpenShift CLI (oc) tool.
+
+[source,shell]
+----
+oc create ns trident
+----
+
+Next, download the Trident CSI driver from git:
+
+[source,shell]
+----
+curl -L -o trident-installer-22.10.0.tar.gz https://github.com/NetApp/trident/releases/download/v22.10.0/trident-installer-22.10.0.tar.gz
+----
+
+Then, extract the contents:
+
+[source,shell]
+----
+tar -xvf ./trident-installer-21.10.1.tar.gz
+----
+
+Use the following helm command to install the Trident CSI driver in the “trident” namespace on the OpenShift cluster.
+
+[source,shell]
+----
+cd trident-installer/helm 
+helm install trident -n trident trident-operator-22.10.0.tgz
+----
+
+Run the following command to verify the Trident driver installation.
+
+[source,shell]
+----
+helm status trident -n trident
+----
+
+image::figure3.png[Figure 3 – Trident installation status]

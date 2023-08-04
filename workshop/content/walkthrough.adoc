@@ -9,6 +9,3 @@
 
 ----
 
-include::exercise1.adoc[]
-
-include::exercise2.adoc[]

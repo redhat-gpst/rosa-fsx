@@ -1,0 +1,17 @@
+[[Scaling-StatefulSet-Pods]]
+=== Scaling StatefulSet pods
+You can easily scale the MySQL StatefulSet application using the following command.
+
+[source,shell]
+----
+oc scale statefulsets mysql-set --replicas=4 -n mysql
+----
+
+Check the number of pods running using this command
+
+[source,shell]
+----
+oc get pods -n mysql
+----
+
+This demonstrates the horizontal scaling of Statefulset pods.

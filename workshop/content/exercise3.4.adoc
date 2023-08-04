@@ -1,0 +1,19 @@
+[[Create-Storage-Class]]
+=== Create storage class in ROSA cluster
+Now, let’s create the storage class.
+
+[source,shell]
+----
+oc apply -f storage-class-csi-nas.yaml
+----
+
+Verify the status of the trident-csi storage class creation.
+
+[source,shell]
+----
+oc get sc
+----
+
+This completes installation of Trident CSI driver and its connectivity to FSx for ONTAP file system. Now we’ll deploy a sample MySQL stateful application on ROSA using file volumes in FSx for ONTAP.
+
+NOTE: If you want to verify applications can create PV using trident operator, create PVC using the `pvc-trident.yaml` file provided in `fsx` folder.

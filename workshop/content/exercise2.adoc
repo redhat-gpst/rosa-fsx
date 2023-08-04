@@ -7,3 +7,24 @@ Take note of the VPC ID, 2 Subnet IDs corresponding to the subnets you want your
 The FSxAllowedCIDR is the allowed CIDR range set up for the FSx for ONTAP security groups ingress rules to control the access. You could use 0.0.0.0/0 or any appropriate CIDR to allow all traffic to access the specific ports of FSx for ONTAP. Run the command in a terminal to create FSx for ONTAP file system.
 
 NOTE: If you want to provision file system with different Storage Capacity and throughput, you can override the default values by setting StorageCapacity and ThroughputCapacity parameters in the CFN template.
+
+[source,shell]
+----
+cd rosa-fsx-netapp-ontap\fsx
+
+aws cloudformation create-stack \
+--stack-name ROSA-FSXONTAP \
+--template-body file://./FSxONTAP.yaml \
+--region us-east-2 \
+--parameters \   
+ParameterKey=Subnet1ID,ParameterValue=subnet-00b92c13e5106e6c8 \
+ParameterKey=myVpc,ParameterValue=vpc-064d62b2f37b01034 \
+ParameterKey=FileSystemName,ParameterValue=ROSA-myFSxONTAP \
+ParameterKey=ThroughputCapacity,ParameterValue=512 \
+ParameterKey=FSxAllowedCIDR,ParameterValue=10.0.0.0/16 \
+ParameterKey=FsxAdminPassword,ParameterValue=Rosa12345 \
+ParameterKey=SvmAdminPassword,ParameterValue=Rosa12345 \
+--capabilities CAPABILITY_NAMED_IAM
+----
+
+Verify your file system and storage virtual machine (SVM) has been created using the Amazon FSx console:
