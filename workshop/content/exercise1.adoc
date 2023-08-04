@@ -1,0 +1,12 @@
+
+[[Clone-GitHub-repository]]
+== Clone GitHub repository
+You will need Git to clone the github repository- https://github.com/aws-samples/rosa-fsx-netapp-ontap[https://github.com/aws-samples/rosa-fsx-netapp-ontap]. If you do not have git, install git with the following command:
+
+----
+sudo yum install git -y
+----
+Clone the git repository:
+
+----
+git clone https://github.com/aws-samples/rosa-fsx-netapp-ontap.git
