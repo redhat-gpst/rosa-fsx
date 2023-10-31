@@ -1,21 +1,33 @@
+== ROSA FSX Workshop
+
+
+This lab guide demonstrates the use of FSx for ONTAP as a persistent storage layer for ROSA applications. We’ll walk through a step-by-step installation of the NetApp Trident CSI driver on a ROSA cluster, provision an FSx for ONTAP file system, deploy a sample stateful application, and demonstrate pod scaling using dynamic persistent volumes. Finally, we’ll cover backup and restore for your application. With this solution, you can set up shared storage solution that scales across AZ and makes it easier to scale, protect, and restore your data using the Trident CSI driver.
+
+Red Hat associates that have access to the Red Hat Demo Platform (RHDP) can launch the ROSA FSx Workshop for a lab environment.
+
+
+Once you have the lab environment ready,  SSH into the bastion and follow the steps below.
+
 
 === Clone GitHub repository
 
 You will need Git to clone the github repository - https://github.com/aws-samples/rosa-fsx-netapp-ontap
 
-If you do not have git, install git with the following command
+If you do not have git, install it with your distro's package manager. 
 
-`sudo dnf install git -y`
+Example:
+
+[source,bash]
+  sudo dnf install git -y
+
+
 
 Clone the git repository:
 
-`git clone https://github.com/aws-samples/rosa-fsx-netapp-ontap.git`
+[source,bash]
+  git clone https://github.com/aws-samples/rosa-fsx-netapp-ontap.git
 
-
-
-[[Provision-FSx-for-ONTAP]]
-
-
+image::images/git_clone.png[]
 
 === Provision FSx for ONTAP
 
@@ -30,21 +42,21 @@ NOTE: If you want to provision file system with different Storage Capacity and t
 
 [source,shell]
 ----
-cd rosa-fsx-netapp-ontap\fsx
+    cd rosa-fsx-netapp-ontap/fsx
 
-aws cloudformation create-stack \
---stack-name ROSA-FSXONTAP \
---template-body file://./FSxONTAP.yaml \
---region us-east-2 \
---parameters \   
-ParameterKey=Subnet1ID,ParameterValue=subnet-00b92c13e5106e6c8 \
-ParameterKey=myVpc,ParameterValue=vpc-064d62b2f37b01034 \
-ParameterKey=FileSystemName,ParameterValue=ROSA-myFSxONTAP \
-ParameterKey=ThroughputCapacity,ParameterValue=512 \
-ParameterKey=FSxAllowedCIDR,ParameterValue=10.0.0.0/16 \
-ParameterKey=FsxAdminPassword,ParameterValue=Rosa12345 \
-ParameterKey=SvmAdminPassword,ParameterValue=Rosa12345 \
---capabilities CAPABILITY_NAMED_IAM
+    aws cloudformation create-stack \
+        --stack-name ROSA-FSXONTAP \
+        --template-body file://./FSxONTAP.yaml \
+        --region us-east-2 \
+        --parameters \   
+        ParameterKey=Subnet1ID,ParameterValue=subnet-00b92c13e5106e6c8 \
+        ParameterKey=myVpc,ParameterValue=vpc-064d62b2f37b01034 \
+        ParameterKey=FileSystemName,ParameterValue=ROSA-myFSxONTAP \
+        ParameterKey=ThroughputCapacity,ParameterValue=512 \
+        ParameterKey=FSxAllowedCIDR,ParameterValue=10.0.0.0/16 \
+        ParameterKey=FsxAdminPassword,ParameterValue=Rosa12345 \
+        ParameterKey=SvmAdminPassword,ParameterValue=Rosa12345 \
+        --capabilities CAPABILITY_NAMED_IAM
 ----
 
 Verify your file system and storage virtual machine (SVM) has been created using the Amazon FSx console:[[Install-Trident-CSI-Driver]]
