@@ -97,7 +97,7 @@ Run the following command to verify the Trident driver installation.
 helm status trident -n trident
 ----
 
-image::figure3.png[Figure 3 – Trident installation status]
+image::images/trident_Installation.png[].png[Figure 3 – Trident installation status]
 [[Configure-Trident-Backend]]
 === Configure Trident CSI backend to FSx for ONTAP
 The Trident backend configuration tells the Trident how to communicate with the storage system (in this case, FSx for ONTAP). We’ll use the ontap-nas driver to provision storage volumes.
