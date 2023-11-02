@@ -207,7 +207,7 @@ Now, verify the secrets were created.
 oc get secrets -n mysql
 ----
 
-image::section4_screenshot1.png[Section 4 - Deploy sample MySQL stateful application-screenshot1]
+image::images/mysql_secrets.png[]
 
 Now we’ll deploy MySQL StatefulSet application on the ROSA cluster. Open `mysql/mysql-statefulset.yaml` and review the details –metadata, replicas, and storageclass name. Then, execute the following command.
 
@@ -223,7 +223,7 @@ Verify the application deployment.
 oc get pods -n mysql
 ----
 
-image::section4_screenshot2.png[Section 4 - Deploy sample MySQL stateful application-screenshot2]
+##. Get screenshot for this section
 
 Verify the PVCs are created by the MySQL application.
 
@@ -232,8 +232,10 @@ Verify the PVCs are created by the MySQL application.
 oc get pvc -n mysql
 ----
 
-image::section4_screenshot3.png[Section 4 - Deploy sample MySQL stateful application-screenshot3]
+image::images/oc_get_pvc_mysql.png[]
+
 [[Create-Service-StatefulSet]]
+
 === Create a service for the StatefulSet application
 A Kubernetes service defines logical set of pods and a policy to access pods. StatefulSet currently requires a headless service to control the domain of its pods, directly reaching each pod with stable DNS entries. By specifying “None” for the clusterIP, you can create a headless service.
 
@@ -249,9 +251,12 @@ Verify the service.
 oc get svc -n mysql
 ----
 
-image::section4.1_screenshot1.png[Section 4.1 Create a service for the StatefulSet application]
+image::images/oc_apply_svc_mysql.png[]
+
 [[Create-MySQL-Client]]
+
 === Create MySQL client for MySQL
+
 The MySQL client is for us to access the MySQL applications that we just deployed. Review the content mysql-client.yaml. Deploy MySQL client using the following command.
 
 [source,shell]
@@ -266,7 +271,6 @@ Verify the pod status.
 oc get pods
 ----
 
-image::section4.2_screenshot1.png[Section 4.2 Create MySQL client for MySQL]
 
 Log in to the MySQL client pod.
 
