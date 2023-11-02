@@ -13,9 +13,9 @@ Steps:
   . <<clone_github>>
   . <<provision_fsx>>
   . <<config_trident>>
-  . Deploy sample MySQL stateful application on ROSA cluster
-  . Scale MySQL application pods across multi-Availability Zones
-  . Backup and restore volumes in the FSx for ONTAP file system
+  . <<deploy_mysql>>
+  . <<scale_mysql_pods>>
+  . <<backup_restore>>
 
 
 === Clone GitHub repository [[clone_github]]
@@ -72,9 +72,6 @@ Verify your file system and storage virtual machine (SVM) has been created using
 
 image::images/stack_volume_detailed.png[]
 
-[[Install-Trident-CSI-Driver]]
-
-
 === Install and configure the Trident CSI driver for ROSA [[config_trident]]
 
 We will be installing the Trident CSI driver in the Openshift “trident” namespace. To create the “trident” namespace, open a command line interface (CLI) on your computer and login to the ROSA cluster using the OpenShift CLI (oc) tool.
@@ -115,9 +112,7 @@ helm status trident -n trident
 
 image::images/trident_installation.png[igure 3 – Trident installation status]]
 
-
-
-==  Create secret to store the SVM username and password in ROSA cluster
+==== Create secret to store the SVM username and password in ROSA cluster
 
 Create a new file with the SVM username and admin password, and save it as svm_secret.yaml. A sample svm_secret.yaml file is included in the fsx folder.
 
@@ -151,7 +146,7 @@ oc get secrets -n trident |grep backend-fsx-ontap-nas
 
 
 [[Configure-Trident-Backend]]
-=== Install and Configure Trident CSI backend to FSx for ONTAP
+==== Install and Configure Trident CSI backend to FSx for ONTAP
 The Trident backend configuration tells the Trident how to communicate with the storage system (in this case, FSx for ONTAP). We’ll use the ontap-nas driver to provision storage volumes.
 
 To get started, move into the `fsx` directory of your cloned git repository. Open the file `backend-ontap-nas.yaml`. Replace the `managementLIF` and `dataLIF` in that file with the Management DNS name and NFS DNS name of Amazon FSx Storage Virtual Machine and `svm` with SVM name as per the following screenshot.
@@ -176,8 +171,8 @@ oc get tbc -n trident
 ----
 
 After successful configuration of the trident backend, we will create a storage class that will use the backend we created above
-[[Create-Storage-Class]]
-=== Create storage class in ROSA cluster
+
+==== Create storage class in ROSA cluster
 Now, let’s create the storage class.
 
 [source,shell]
@@ -195,8 +190,11 @@ oc get sc
 This completes installation of Trident CSI driver and its connectivity to FSx for ONTAP file system. Now we’ll deploy a sample MySQL stateful application on ROSA using file volumes in FSx for ONTAP.
 
 NOTE: If you want to verify applications can create PV using trident operator, create PVC using the `pvc-trident.yaml` file provided in `fsx` folder.
-[[Deploy-MySQL-Application]]
-=== Deploy sample MySQL stateful application
+
+
+=== Deploy sample MySQL stateful application [[deploy_mysql]]
+
+
 In this section, we will deploy the highly available MySQL application onto the ROSA cluster using a Kubernetes StatefulSet and have the PersistentVolume provisioned by Trident. Kubernetes StatefulSet ensures the original PersistentVolume (PV) is mounted on the same pod identity when it’s rescheduled again to retain data integrity and consistency. For more information about the MySQL application replication configuration, please refer to the link:https://dev.mysql.com/doc/refman/8.0/en/replication.html[MySQL Official document].
 
 Before we begin with MySQL application deployment, we’ll store the application’s sensitive information like username and password in Secrets. Here, we’ll be creating simple secrets.
@@ -246,7 +244,7 @@ image::images/oc_get_pvc_mysql.png[]
 
 [[Create-Service-StatefulSet]]
 
-=== Create a service for the StatefulSet application
+==== Create a service for the StatefulSet application
 A Kubernetes service defines logical set of pods and a policy to access pods. StatefulSet currently requires a headless service to control the domain of its pods, directly reaching each pod with stable DNS entries. By specifying “None” for the clusterIP, you can create a headless service.
 
 [source,shell]
@@ -263,7 +261,7 @@ oc get svc -n mysql
 
 image::images/oc_apply_svc_mysql.png[]
 
-[[Create-MySQL-Client]]
+]
 
 === Create MySQL client for MySQL
 
@@ -319,8 +317,10 @@ MySQL [(none)]> select * from erp.Persons;
 | 1234 | John | Doe |
 +------+-----------+----------+
 ----
-[[Scaling-StatefulSet-Pods]]
-=== Scaling StatefulSet pods
+
+
+=== Scale MySQL application pods [[scale_mysql_pods]]
+
 You can easily scale the MySQL StatefulSet application using the following command.
 
 [source,shell]
@@ -336,8 +336,9 @@ oc get pods -n mysql
 ----
 
 This demonstrates the horizontal scaling of Statefulset pods.
-[[FSx-Snapshots]]
-=== FSx for ONTAP snapshots
+
+=== Backup and Restore with Snapshots [[backup_restore]]
+
 FSx for ONTAP supports snapshots, which are point-in-time read-only images of your volumes that consume minimal space and can be created near-instantly. You can use snapshots to create online backups of your data that are stored within the volume itself.
 
 Check out the blog link:https://aws.amazon.com/blogs/storage/run-containerized-applications-efficiently-using-amazon-fsx-for-netapp-ontap-and-amazon-eks/[“Run containerized applications efficiently using Amazon FSx for NetApp ONTAP and Amazon EKS”] to backup and restore data persistent volumes with FSx for ONTAP. We will walk through how to leverage the FSx for ONTAP snapshot feature to instantly restore data on ROSA cluster.
