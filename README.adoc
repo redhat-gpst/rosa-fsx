@@ -9,6 +9,7 @@ NOTE: Red Hat associates that have access to the Red Hat Demo Platform (RHDP) ca
 Once you have the lab environment ready,  SSH into the bastion and follow the steps below.
 
 Steps: 
+
   . Clone GitHub repository
   . Provision FSx for ONTAP file system using CloudFormation
   . Install and configure the Trident CSI driver for ROSA cluster
