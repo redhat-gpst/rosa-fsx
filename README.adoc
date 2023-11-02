@@ -3,10 +3,18 @@
 
 This lab guide demonstrates the use of FSx for ONTAP as a persistent storage layer for ROSA applications. We’ll walk through a step-by-step installation of the NetApp Trident CSI driver on a ROSA cluster, provision an FSx for ONTAP file system, deploy a sample stateful application, and demonstrate pod scaling using dynamic persistent volumes. Finally, we’ll cover backup and restore for your application. With this solution, you can set up shared storage solution that scales across AZ and makes it easier to scale, protect, and restore your data using the Trident CSI driver.
 
-Red Hat associates that have access to the Red Hat Demo Platform (RHDP) can launch the ROSA FSx Workshop for a lab environment.
+NOTE: Red Hat associates that have access to the Red Hat Demo Platform (RHDP) can launch the ROSA FSx Workshop for a lab environment.
 
 
 Once you have the lab environment ready,  SSH into the bastion and follow the steps below.
+
+Steps: 
+  . Clone GitHub repository
+  . Provision FSx for ONTAP file system using CloudFormation
+  . Install and configure the Trident CSI driver for ROSA cluster
+  . Deploy sample MySQL stateful application on ROSA cluster
+  . Scale MySQL application pods across multi-Availability Zones
+  . Backup and restore volumes in the FSx for ONTAP file system
 
 
 === Clone GitHub repository
