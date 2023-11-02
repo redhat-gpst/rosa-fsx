@@ -59,7 +59,13 @@ NOTE: If you want to provision file system with different Storage Capacity and t
         --capabilities CAPABILITY_NAMED_IAM
 ----
 
-Verify your file system and storage virtual machine (SVM) has been created using the Amazon FSx console:[[Install-Trident-CSI-Driver]]
+Verify your file system and storage virtual machine (SVM) has been created using the Amazon FSx console:
+
+image::images/stack_volume_detailed.png[]
+
+[[Install-Trident-CSI-Driver]]
+
+
 == Install and configure the Trident CSI driver for ROSA cluster
 We will be installing the Trident CSI driver in the Openshift “trident” namespace. To create the “trident” namespace, open a command line interface (CLI) on your computer and login to the ROSA cluster using the OpenShift CLI (oc) tool.
 
@@ -97,16 +103,52 @@ Run the following command to verify the Trident driver installation.
 helm status trident -n trident
 ----
 
-image::images/trident_Installation.png[].png[Figure 3 – Trident installation status]
+image::images/trident_installation.png[igure 3 – Trident installation status]]
+
+
+
+==  Create secret to store the SVM username and password in ROSA cluster
+
+Create a new file with the SVM username and admin password, and save it as svm_secret.yaml. A sample svm_secret.yaml file is included in the fsx folder.
+
+svm_secret.yaml
+
+[source,yaml]
+
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: backend-fsx-ontap-nas-secret
+    namespace: trident
+  type: Opaque
+  stringData:
+    username: vsadmin
+    password: step#2 password
+
+NOTE: The SVM username and its admin password have been created via step 2. You can retrieve it from the AWS Secrets Manager console as shown in the following screenshot:
+
+image:images/svm_secrets_manager.png[SVM Secrets Manager]
+
+Add the secrets to the ROSA cluster with the following command:
+
+[source, bash]
+oc apply -f svm_secret.yaml
+
+To verify the secrets have been added to the ROSA cluster, run the following command.
+
+[source, bash]
+oc get secrets -n trident |grep backend-fsx-ontap-nas
+
+
 [[Configure-Trident-Backend]]
-=== Configure Trident CSI backend to FSx for ONTAP
+=== Install and Configure Trident CSI backend to FSx for ONTAP
 The Trident backend configuration tells the Trident how to communicate with the storage system (in this case, FSx for ONTAP). We’ll use the ontap-nas driver to provision storage volumes.
 
 To get started, move into the `fsx` directory of your cloned git repository. Open the file `backend-ontap-nas.yaml`. Replace the `managementLIF` and `dataLIF` in that file with the Management DNS name and NFS DNS name of Amazon FSx Storage Virtual Machine and `svm` with SVM name as per the following screenshot.
 
 NOTE: `ManagementLIF` and `DataLIF` can be found via the Amazon FSx Console under “Storage virtual machines” as shown in the following screenshot:
 
-image::figure5.png[Figure 5 – Management LIF from SVM details page]
+image::images/stack_volume_detailed.png[Figure 5 – Management LIF from SVM details page]
 
 Now let’s execute the following commands in the terminal to configure the Trident backend in our ROSA cluster.
 
