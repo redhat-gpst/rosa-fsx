@@ -11,15 +11,14 @@ Once you have the lab environment ready,  SSH into the bastion and follow the st
 Steps: 
 
   . <<clone_github>>
-  . Provision FSx for ONTAP file system using CloudFormation
-  . Install and configure the Trident CSI driver for ROSA cluster
+  . <<provision_fsx>>
+  . <<config_trident>>
   . Deploy sample MySQL stateful application on ROSA cluster
   . Scale MySQL application pods across multi-Availability Zones
   . Backup and restore volumes in the FSx for ONTAP file system
 
 
 === Clone GitHub repository [[clone_github]]
-:sectnums:
 
 You will need Git to clone the github repository - https://github.com/aws-samples/rosa-fsx-netapp-ontap
 
@@ -39,7 +38,7 @@ Clone the git repository:
 
 image::images/git_clone.png[]
 
-=== Provision FSx for ONTAP
+=== Provision FSx for ONTAP [[provision_fsx]]
 
 We will create a singlemulti-AZ FSx for ONTAP file system in the same VPC as the ROSA cluster.
 
@@ -76,7 +75,8 @@ image::images/stack_volume_detailed.png[]
 [[Install-Trident-CSI-Driver]]
 
 
-== Install and configure the Trident CSI driver for ROSA cluster
+=== Install and configure the Trident CSI driver for ROSA [[config_trident]]
+
 We will be installing the Trident CSI driver in the Openshift “trident” namespace. To create the “trident” namespace, open a command line interface (CLI) on your computer and login to the ROSA cluster using the OpenShift CLI (oc) tool.
 
 [source,shell]
