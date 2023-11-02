@@ -10,12 +10,12 @@ Once you have the lab environment ready,  SSH into the bastion and follow the st
 
 Steps: 
 
-  . <<clone_github>>
-  . <<provision_fsx>>
-  . <<config_trident>>
-  . <<deploy_mysql>>
-  . <<scale_mysql_pods>>
-  . <<backup_restore>>
+  . <<#clone_github>>
+  . <<#provision_fsx>>
+  . <<#config_trident>>
+  . <<#deploy_mysql>>
+  . <<#scale_mysql_pods>>
+  . <<#backup_restore>>
 
 
 == Clone GitHub repository [[clone_github]]
@@ -385,7 +385,7 @@ This command will restore the volume with the contents from the `backup_point_01
 
 Remember to verify the restoration to ensure that the volume is restored successfully.
 
-=== Validate the Database Restored Immediately ==
+=== Validate the Database Restored Immediately
 Given we just restored the database in 6.3, we will validate the database is restored as expected.
 
 Go back to the container console in 6.2:
@@ -401,7 +401,7 @@ MySQL [(none)]> SHOW DATABASES;
 +--------------------+
 ----
 
-=== Select from erp.Persons ==
+=== Select from erp.Persons
 [source,sql]
 ----
 MySQL [(none)]> select * from erp.Persons;
