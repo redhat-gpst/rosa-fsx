@@ -40,9 +40,16 @@ image::images/git_clone.png[]
 
 == Provision FSx for ONTAP [[provision_fsx]]
 
-We will create a singlemulti-AZ FSx for ONTAP file system in the same VPC as the ROSA cluster.
+We will create a single-AZ FSx for ONTAP file system in the same VPC as the ROSA cluster.
 
 Take note of the VPC ID, 2 Subnet IDs corresponding to the subnets you want your file system to be in, as well as all route table IDs associated with the ROSA VPC subnets, and enter those values in the following command.
+
+SSH into the bastion and run the following command.  Take note of the vpcid on the 10.0.0.0/17 subnet
+
+[source,bash]
+aws ec2 describe-subnets --query 'Subnets[*].{SubnetId:SubnetId,VpcId:VpcId,CidrBlock:CidrBlock}' --output table
+
+
 
 The FSxAllowedCIDR is the allowed CIDR range set up for the FSx for ONTAP security groups ingress rules to control the access. You could use 0.0.0.0/0 or any appropriate CIDR to allow all traffic to access the specific ports of FSx for ONTAP. Run the command in a terminal to create FSx for ONTAP file system.
 
