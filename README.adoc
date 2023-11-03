@@ -50,8 +50,12 @@ NOTE: If you want to provision file system with different Storage Capacity and t
 
 
 [source,shell]
-----
+
     cd rosa-fsx-netapp-ontap/fsx
+
+[source,shell]
+
+----
 
     aws cloudformation create-stack \
         --stack-name ROSA-FSXONTAP \
