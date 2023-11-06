@@ -35,10 +35,6 @@ Clone the git repository:
 
 cd into the rosa-fsx directory
 
-[source, bash]
-
-  cd rosa-fsx
-
 == Provision FSx for ONTAP [[provision_fsx]]
 
 We will create a single-AZ FSx for ONTAP file system in the same VPC as the ROSA cluster.
@@ -72,7 +68,7 @@ NOTE: Take note of the vpcid and subnet id for 10.0.0.0/17.  They will be used i
 
 [source,shell]
 ----
-    cd fsx
+    cd rosa-fsx/fsx
 ----
 
 Replace the subnet and vpc ID's from above step:
