@@ -52,7 +52,7 @@ aws ec2 describe-subnets --query 'Subnets[*].{SubnetId:SubnetId,VpcId:VpcId,Cidr
 ----
 
 Output:
-[options="header"]
+
 -------------------------------------------------------------------------
                              DescribeSubnets                            |
 +----------------+----------------------------+-------------------------+
