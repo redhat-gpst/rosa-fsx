@@ -231,15 +231,38 @@ backend-fsx-ontap-nas-secret         Opaque                                2    
 
 The Trident backend configuration tells Trident how to communicate with the storage system (in this case, FSx for ONTAP). We’ll use the ontap-nas driver to provision storage volumes.
 
-To get started, cd into the `fsx` directory of your cloned git repository. 
+To get started, make sure you are in the `fsx` directory. 
 
-Edit the file `backend-ontap-nas.yml`. 
+[source,bash]
+----
+cd ~/rosa/fsx
+----
 
-Update the `managementLIF` and `dataLIF` values in that file with the Management and NFS IP addresses of the Amazon FSx Storage Virtual Machine and `svm` with the SVM name as per the following screenshot.
+We are going to edit `backend-ontap-nas.yml` so it has the IP from the ManagementLIF and DataLIF IP addresses.
+
 
 NOTE: `ManagementLIF` and `DataLIF` IP Addresses can be found via the Amazon FSx Console under “Storage virtual machines” as shown in the following screenshot:
 
 image::images/smv1.png[]
+
+Example file after editing:
+[source,yaml]
+----
+apiVersion: trident.netapp.io/v1
+kind: TridentBackendConfig
+metadata:
+  name: backend-fsx-ontap-nas
+  namespace: trident
+spec:
+  version: 1
+  backendName: fsx-ontap
+  storageDriverName: ontap-nas
+  managementLIF: 10.0.50.139
+  dataLIF: 10.0.50.139
+  svm: SVM1
+  credentials:
+    name: backend-fsx-ontap-nas-secret
+----
 
 Next execute the following commands in the terminal to configure the Trident backend in the ROSA cluster.
 
@@ -261,9 +284,8 @@ NAME                    BACKEND NAME   BACKEND UUID                           PH
 backend-fsx-ontap-nas   fsx-ontap      1f490bf3-492c-4ef7-899e-9e7d8711c82f   Bound   Success
 ----
 
-After successful configuration of the trident backend, you will create a storage class that will use the backend created above
-
 === Create storage class in ROSA cluster
+
 Now, create the storage class.
 
 [source,shell]
@@ -283,7 +305,8 @@ NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      A
 trident-csi     csi.trident.netapp.io   Retain          Immediate              true                   1h58m
 ----
 
-This completes installation of Trident CSI driver and its connectivity to FSx for ONTAP file system. Now we’ll deploy a sample MySQL stateful application on ROSA using file volumes in FSx for ONTAP.
+This completes installation of Trident CSI driver and its connectivity to FSx for ONTAP file system. 
+Next, we will deploy a sample MySQL stateful application on ROSA using file volumes in FSx for ONTAP.
 
 NOTE: If you want to verify applications can create a PV using the trident operator, create a PVC using the `pvc-trident.yml` file provided in `fsx` folder.
 
@@ -306,10 +329,14 @@ Now, verify the secrets were created.
 
 [source,shell]
 ----
-oc get secrets -n mysql
+oc get secrets -n mysql | awk '/NAME|mysql-password/'
+----
+[listing]
+----
+NAME                       TYPE                                  DATA   AGE
+mysql-password             opaque                                1      1h34m
 ----
 
-image::images/mysql_secrets.png[]
 
 Next we will deploy MySQL StatefulSet application on the ROSA cluster. Open `mysql/mysql-statefulset.yml` and review the details –metadata, replicas, and storageclass name. Then, execute the following command. 
 
@@ -333,10 +360,12 @@ Verify the PVCs are created by the MySQL application.
 ----
 oc get pvc -n mysql
 ----
-
-image::images/oc_get_pvc_mysql.png[]
-
-[[Create-Service-StatefulSet]]
+[listing]
+NAME                      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+mysql-store-mysql-set-0   Bound    pvc-676d059c-1480-4e36-963e-2249efc70331   10Gi       RWX            trident-csi    4h4m
+mysql-store-mysql-set-1   Bound    pvc-073c6a8c-27ab-42f0-b520-74ea90e2d66d   10Gi       RWX            trident-csi    4h4m
+mysql-store-mysql-set-2   Bound    pvc-df93b37d-45f8-4011-9908-654ed67acd17   10Gi       RWX            trident-csi    4h3m
+----
 
 === Create a service for the StatefulSet application
 
