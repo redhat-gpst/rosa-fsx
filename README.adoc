@@ -208,7 +208,7 @@ stringData:
   password: Rosa12345
 ----
 
-\\ image:images/svm_secrets_manager.png[SVM Secrets Manager]
+// image:images/svm_secrets_manager.png[SVM Secrets Manager]
 
 Add the secrets to the ROSA cluster with the following command:
 
