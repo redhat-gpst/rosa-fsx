@@ -244,11 +244,11 @@ In this section, we will deploy the highly available MySQL application onto the 
 
 Before we begin with MySQL application deployment, we will store the application’s sensitive information like username and password in Secrets. We will be creating simple secrets.
 
-cd into the `files/mysql` folder in your cloned git repository. Review the file `mysql-secrets.yml` file, and execute the following command to create the secret.
+cd into the `fsx/mysql` folder in your cloned git repository. Review the file `mysql-secrets.yml` file, and execute the following command to create the secret.
 
 [source,shell]
 ----
-cd files/mysql
+cd fsx/mysql
 oc create namespace mysql
 oc apply -f mysql-secrets.yml
 ----
