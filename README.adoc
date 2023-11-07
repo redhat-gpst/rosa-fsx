@@ -172,7 +172,7 @@ svm_secret.yaml
   type: Opaque
   stringData:
     username: vsadmin
-    password: step#2 password
+    password: Rosa12345
 
 NOTE: The SVM username and its admin password have been created via step 2. You can retrieve it from the AWS Secrets Manager console as shown in the following screenshot:
 
@@ -186,17 +186,21 @@ oc apply -f svm_secret.yaml
 To verify the secrets have been added to the ROSA cluster, run the following command.
 
 [source, bash]
-oc get secrets -n trident |grep backend-fsx-ontap-nas
+oc get secrets -n trident | grep backend-fsx-ontap-nas
 
 === Install and Configure Trident CSI backend to FSx for ONTAP
 
-The Trident backend configuration tells the Trident how to communicate with the storage system (in this case, FSx for ONTAP). We’ll use the ontap-nas driver to provision storage volumes.
+The Trident backend configuration tells Trident how to communicate with the storage system (in this case, FSx for ONTAP). We’ll use the ontap-nas driver to provision storage volumes.
 
-To get started, move into the `fsx` directory of your cloned git repository. Open the file `backend-ontap-nas.yaml`. Replace the `managementLIF` and `dataLIF` in that file with the Management DNS name and NFS DNS name of Amazon FSx Storage Virtual Machine and `svm` with SVM name as per the following screenshot.
+To get started, cd into the `fsx` directory of your cloned git repository. 
 
-NOTE: `ManagementLIF` and `DataLIF` can be found via the Amazon FSx Console under “Storage virtual machines” as shown in the following screenshot:
+Edit the file `backend-ontap-nas.yaml`. 
 
-image::images/stack_volume_detailed.png[Figure 5 – Management LIF from SVM details page]
+Update the `managementLIF` and `dataLIF` values in that file with the Management and NFS IP addresses of the Amazon FSx Storage Virtual Machine and `svm` with the SVM name as per the following screenshot.
+
+NOTE: `ManagementLIF` and `DataLIF` IP Addresses can be found via the Amazon FSx Console under “Storage virtual machines” as shown in the following screenshot:
+
+image::images/smv1.png[]
 
 Now let’s execute the following commands in the terminal to configure the Trident backend in our ROSA cluster.
 
@@ -236,15 +240,15 @@ NOTE: If you want to verify applications can create PV using trident operator, c
 
 == Deploy sample MySQL stateful application [[deploy_mysql]]
 
-In this section, we will deploy the highly available MySQL application onto the ROSA cluster using a Kubernetes StatefulSet and have the PersistentVolume provisioned by Trident. Kubernetes StatefulSet ensures the original PersistentVolume (PV) is mounted on the same pod identity when it’s rescheduled again to retain data integrity and consistency. For more information about the MySQL application replication configuration, please refer to the link:https://dev.mysql.com/doc/refman/8.0/en/replication.html[MySQL Official document].
+In this section, we will deploy the highly available MySQL application onto the ROSA cluster using a Kubernetes StatefulSet and have the PersistentVolume provisioned by Trident. Kubernetes StatefulSet ensures the original PersistentVolume (PV) is mounted on the same pod identity when its rescheduled again to retain data integrity and consistency. For more information about the MySQL application replication configuration, please refer to the link:https://dev.mysql.com/doc/refman/8.0/en/replication.html[MySQL Official document].
 
-Before we begin with MySQL application deployment, we’ll store the application’s sensitive information like username and password in Secrets. Here, we’ll be creating simple secrets.
+Before we begin with MySQL application deployment, we will store the application’s sensitive information like username and password in Secrets. We will be creating simple secrets.
 
-Open the `mysql` folder in your cloned git repository, review the file `mysql-secrets.yaml` file, and execute the following command to create the secret.
+cd into the `files/mysql` folder in your cloned git repository. Review the file `mysql-secrets.yaml` file, and execute the following command to create the secret.
 
 [source,shell]
 ----
-cd mysql
+cd files/mysql
 oc create namespace mysql
 oc apply -f mysql-secrets.yaml
 ----
@@ -258,7 +262,9 @@ oc get secrets -n mysql
 
 image::images/mysql_secrets.png[]
 
-Now we’ll deploy MySQL StatefulSet application on the ROSA cluster. Open `mysql/mysql-statefulset.yaml` and review the details –metadata, replicas, and storageclass name. Then, execute the following command.
+Next we will deploy MySQL StatefulSet application on the ROSA cluster. Open `mysql/mysql-statefulset.yaml` and review the details –metadata, replicas, and storageclass name. Then, execute the following command. 
+
+NOTE: Ignore any warnings about PodSecurity
 
 [source,shell]
 ----
@@ -287,7 +293,7 @@ image::images/oc_get_pvc_mysql.png[]
 
 === Create a service for the StatefulSet application
 
-A Kubernetes service defines logical set of pods and a policy to access pods. StatefulSet currently requires a headless service to control the domain of its pods, directly reaching each pod with stable DNS entries. By specifying “None” for the clusterIP, you can create a headless service.
+An OpenShift service defines a logical set of pods and a policy to access pods. StatefulSet currently requires a headless service to control the domain of its pods, directly reaching each pod with stable DNS entries. By specifying “None” for the clusterIP, you can create a headless service.
 
 [source,shell]
 ----
@@ -357,6 +363,10 @@ MySQL [(none)]> select * from erp.Persons;
 +------+-----------+----------+
 ----
 
+Type `exit` to exit the mysql server and `exit` again to exit the pod.  You should now be back at the bastion prompt
+
+
+
 === Scale MySQL application pods [[scale_mysql_pods]]
 
 You can easily scale the MySQL StatefulSet application using the following command.
@@ -366,7 +376,7 @@ You can easily scale the MySQL StatefulSet application using the following comma
 oc scale statefulsets mysql-set --replicas=4 -n mysql
 ----
 
-Check the number of pods running using this command
+Check the number of pods running using this command. You may have to run it multiple times while the additional pods start.
 
 [source,shell]
 ----
