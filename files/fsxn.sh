@@ -1,6 +1,6 @@
     aws cloudformation create-stack \
         --stack-name ROSA-FSXONTAP \
-        --template-body file://./FSxONTAP.yaml \
+        --template-body file://./FSxONTAP.yml \
         --region us-east-2 \
         --parameters \
         ParameterKey=Subnet1ID,ParameterValue=subnet-036afe007acef1270 \

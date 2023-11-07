@@ -80,7 +80,7 @@ NOTE: You can monitor the progress of the stack creation from AWS Console -> Clo
 
     aws cloudformation create-stack \
         --stack-name ROSA-FSXONTAP \
-        --template-body file://./FSxONTAP.yaml \
+        --template-body file://./FSxONTAP.yml \
         --region us-east-2 \
         --parameters \   
         ParameterKey=Subnet1ID,ParameterValue=subnet-00b92c13e5106e6c8 \
@@ -158,9 +158,9 @@ image::images/trident_installation.png[igure 3 – Trident installation status]]
 
 === Create secret to store the SVM username and password in ROSA cluster
 
-Create a new file with the SVM username and admin password, and save it as svm_secret.yaml. A sample svm_secret.yaml file is included in the fsx folder.
+Create a new file with the SVM username and admin password, and save it as svm_secret.yml. A sample svm_secret.yml file is included in the fsx folder.
 
-svm_secret.yaml
+svm_secret.yml
 
 [source,yaml]
 
@@ -181,7 +181,7 @@ image:images/svm_secrets_manager.png[SVM Secrets Manager]
 Add the secrets to the ROSA cluster with the following command:
 
 [source, bash]
-oc apply -f svm_secret.yaml
+oc apply -f svm_secret.yml
 
 To verify the secrets have been added to the ROSA cluster, run the following command.
 
@@ -194,7 +194,7 @@ The Trident backend configuration tells Trident how to communicate with the stor
 
 To get started, cd into the `fsx` directory of your cloned git repository. 
 
-Edit the file `backend-ontap-nas.yaml`. 
+Edit the file `backend-ontap-nas.yml`. 
 
 Update the `managementLIF` and `dataLIF` values in that file with the Management and NFS IP addresses of the Amazon FSx Storage Virtual Machine and `svm` with the SVM name as per the following screenshot.
 
@@ -207,7 +207,7 @@ Now let’s execute the following commands in the terminal to configure the Trid
 [source,shell]
 ----
 cd fsx 
-oc apply -f backend-ontap-nas.yaml
+oc apply -f backend-ontap-nas.yml
 ----
 
 Verify the backend configuration.
@@ -224,7 +224,7 @@ Now, let’s create the storage class.
 
 [source,shell]
 ----
-oc apply -f storage-class-csi-nas.yaml
+oc apply -f storage-class-csi-nas.yml
 ----
 
 Verify the status of the trident-csi storage class creation.
@@ -236,7 +236,7 @@ oc get sc
 
 This completes installation of Trident CSI driver and its connectivity to FSx for ONTAP file system. Now we’ll deploy a sample MySQL stateful application on ROSA using file volumes in FSx for ONTAP.
 
-NOTE: If you want to verify applications can create PV using trident operator, create PVC using the `pvc-trident.yaml` file provided in `fsx` folder.
+NOTE: If you want to verify applications can create PV using trident operator, create PVC using the `pvc-trident.yml` file provided in `fsx` folder.
 
 == Deploy sample MySQL stateful application [[deploy_mysql]]
 
@@ -244,13 +244,13 @@ In this section, we will deploy the highly available MySQL application onto the 
 
 Before we begin with MySQL application deployment, we will store the application’s sensitive information like username and password in Secrets. We will be creating simple secrets.
 
-cd into the `files/mysql` folder in your cloned git repository. Review the file `mysql-secrets.yaml` file, and execute the following command to create the secret.
+cd into the `files/mysql` folder in your cloned git repository. Review the file `mysql-secrets.yml` file, and execute the following command to create the secret.
 
 [source,shell]
 ----
 cd files/mysql
 oc create namespace mysql
-oc apply -f mysql-secrets.yaml
+oc apply -f mysql-secrets.yml
 ----
 
 Now, verify the secrets were created.
@@ -262,13 +262,13 @@ oc get secrets -n mysql
 
 image::images/mysql_secrets.png[]
 
-Next we will deploy MySQL StatefulSet application on the ROSA cluster. Open `mysql/mysql-statefulset.yaml` and review the details –metadata, replicas, and storageclass name. Then, execute the following command. 
+Next we will deploy MySQL StatefulSet application on the ROSA cluster. Open `mysql/mysql-statefulset.yml` and review the details –metadata, replicas, and storageclass name. Then, execute the following command. 
 
 NOTE: Ignore any warnings about PodSecurity
 
 [source,shell]
 ----
-oc apply -f mysql-statefulset.yaml
+oc apply -f mysql-statefulset.yml
 ----
 
 Verify the application deployment.
@@ -297,7 +297,7 @@ An OpenShift service defines a logical set of pods and a policy to access pods. 
 
 [source,shell]
 ----
-oc apply -f mysql-service.yaml
+oc apply -f mysql-service.yml
 ----
 
 Verify the service.
@@ -311,11 +311,11 @@ image::images/oc_apply_svc_mysql.png[]
 
 === Create MySQL client for MySQL
 
-The MySQL client is for us to access the MySQL applications that we just deployed. Review the content mysql-client.yaml. Deploy MySQL client using the following command.
+The MySQL client is for us to access the MySQL applications that we just deployed. Review the content mysql-client.yml. Deploy MySQL client using the following command.
 
 [source,shell]
 ----
-oc apply -f mysql-client.yaml
+oc apply -f mysql-client.yml
 ----
 
 Verify the pod status.
@@ -346,7 +346,7 @@ Within the mysql-client pod, connect to the MySQL server.
 mysql -u root -p -h mysql-set-0.mysql.mysql.svc.cluster.local
 ----
 
-Enter the password that is stored in the mysql-secrets.yaml. Once connected, Create a database on the MySQL database.
+Enter the password that is stored in the mysql-secrets.yml. Once connected, Create a database on the MySQL database.
 
 [source,sql]
 ----
