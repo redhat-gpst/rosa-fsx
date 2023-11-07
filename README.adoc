@@ -315,16 +315,18 @@ In this section, we will deploy the highly available MySQL application onto the 
 
 Before we begin with MySQL application deployment, we will store the application’s sensitive information like username and password in Secrets. We will be creating simple secrets.
 
-cd into the `~/rosa-fsx/fsx/mysql` folder 
+cd into the `~/rosa-fsx/fsx/mysql` directory 
 [source,shell]
 ----
 cd ~/rosa-fsx/fsx/mysql
 ----
+
 Create the mysql namespace
 [source,bash]
 ----
 oc create namespace mysql
------
+----
+
 Create the mysql secret
 [source,bash]
 ----
@@ -333,7 +335,7 @@ oc apply -f mysql-secrets.yml
 
 Now, verify the secrets were created.
 
-[source,shell]
+[source,bash]
 ----
 oc get secrets -n mysql | awk '/NAME|mysql-password/'
 ----
