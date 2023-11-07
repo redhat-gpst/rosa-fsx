@@ -50,7 +50,7 @@ From the bastion, run the following command.
 
 [source,bash]
 ----
-  aws ec2 describe-subnets --query 'Subnets[*].{SubnetId:SubnetId,VpcId:VpcId,CidrBlock:CidrBlock}' \
+aws ec2 describe-subnets --query 'Subnets[*].{SubnetId:SubnetId,VpcId:VpcId,CidrBlock:CidrBlock}' \
    --output table
 ----
 
@@ -72,7 +72,7 @@ Run the following command to assign the SubnetId to SUBNETID
 
 [source,bash]
 ----
-  export SUBNETID=$(aws ec2 describe-subnets --query 'Subnets[?CidrBlock==`10.0.0.0/17`].SubnetId' \
+export SUBNETID=$(aws ec2 describe-subnets --query 'Subnets[?CidrBlock==`10.0.0.0/17`].SubnetId' \
    --output json | jq -r '.[0]')
 ----
 
@@ -80,7 +80,7 @@ Run the following command to assign the VpcId to VPCID
 
 [source,bash]
 ----
-  export VPCID=$(aws ec2 describe-subnets --query 'Subnets[?CidrBlock==`10.0.0.0/17`].VpcId' \
+export VPCID=$(aws ec2 describe-subnets --query 'Subnets[?CidrBlock==`10.0.0.0/17`].VpcId' \
    --output json | jq -r '.[0]')
 ----
 
@@ -88,19 +88,19 @@ Run the following command to create the stack
 
 [source,shell]
 ----
-    aws cloudformation create-stack \
-        --stack-name ROSA-FSXONTAP \
-        --template-body file://./FSxONTAP.yml \
-        --region us-east-2 \
-        --parameters \   
-        ParameterKey=Subnet1ID,ParameterValue=$SUBNETID \
-        ParameterKey=myVpc,ParameterValue=$VPCID \
-        ParameterKey=FileSystemName,ParameterValue=ROSA-myFSxONTAP \
-        ParameterKey=ThroughputCapacity,ParameterValue=512 \
-        ParameterKey=FSxAllowedCIDR,ParameterValue=10.0.0.0/16 \
-        ParameterKey=FsxAdminPassword,ParameterValue=Rosa12345 \
-        ParameterKey=SvmAdminPassword,ParameterValue=Rosa12345 \
-        --capabilities CAPABILITY_NAMED_IAM
+aws cloudformation create-stack \
+  --stack-name ROSA-FSXONTAP \
+  --template-body file://./FSxONTAP.yml \
+  --region us-east-2 \
+  --parameters \   
+     ParameterKey=Subnet1ID,ParameterValue=$SUBNETID \
+     ParameterKey=myVpc,ParameterValue=$VPCID \
+     ParameterKey=FileSystemName,ParameterValue=ROSA-myFSxONTAP \
+     ParameterKey=ThroughputCapacity,ParameterValue=512 \
+     ParameterKey=FSxAllowedCIDR,ParameterValue=10.0.0.0/16 \
+     ParameterKey=FsxAdminPassword,ParameterValue=Rosa12345 \
+     ParameterKey=SvmAdminPassword,ParameterValue=Rosa12345 \
+  --capabilities CAPABILITY_NAMED_IAM
 ----
 NOTE: You can monitor the progress of the stack creation from AWS Console -> CloudFormation -> Stacks -> ROSA-FSXONTAP
 
@@ -140,7 +140,9 @@ Next, download the Trident CSI driver from git:
 
 [source,shell]
 ----
-curl -L -o trident-installer.tar.gz https://github.com/NetApp/trident/releases/download/v22.10.0/trident-installer-22.10.0.tar.gz
+cd ~/rosa-fsx/fsx/
+curl -L -o trident-installer.tar.gz \ 
+  https://github.com/NetApp/trident/releases/download/v22.10.0/trident-installer-22.10.0.tar.gz
 ----
 
 Then, extract the contents:
@@ -154,7 +156,7 @@ Use the following helm command to install the Trident CSI driver in the “tride
 
 [source,shell]
 ----
-cd trident-installer/helm 
+cd ~/rosa-fsx/fsx/trident-installer/helm 
 helm install trident -n trident trident-operator-22.10.0.tgz
 ----
 
@@ -169,23 +171,23 @@ image::images/trident_installation.png[igure 3 – Trident installation status]]
 
 === Create secret to store the SVM username and password in ROSA cluster
 
-Create a new file with the SVM username and admin password, and save it as svm_secret.yml. A sample svm_secret.yml file is included in the fsx folder.
+Create a new file with the SVM username and admin password, and save it as `svm_secret.yml`. 
 
-svm_secret.yml
+A sample `svm_secret.yml` file is included in the fsx folder.
+
 
 [source,yaml]
-
-  apiVersion: v1
-  kind: Secret
-  metadata:
-    name: backend-fsx-ontap-nas-secret
-    namespace: trident
-  type: Opaque
-  stringData:
-    username: vsadmin
-    password: Rosa12345
-
-NOTE: The SVM username and its admin password have been created via step 2. You can retrieve it from the AWS Secrets Manager console as shown in the following screenshot:
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backend-fsx-ontap-nas-secret
+  namespace: trident
+type: Opaque
+stringData:
+  username: vsadmin
+  password: Rosa12345
+----
 
 image:images/svm_secrets_manager.png[SVM Secrets Manager]
 
@@ -289,7 +291,7 @@ Verify the application deployment.
 oc get pods -n mysql
 ----
 
-##. Get screenshot for this section
+
 
 Verify the PVCs are created by the MySQL application.
 
