@@ -30,11 +30,11 @@ If you do not have git, install it with your distro's package manager.
 Clone the git repository:
 
 [source,bash]
-  git clone https://github.com/redhat-gpst/rosa-fsx.git
-
+----
+git clone https://github.com/redhat-gpst/rosa-fsx.git
+----
 
 cd into the rosa-fsx/fsx directory
-
 
 [source,shell]
 ----
@@ -44,7 +44,6 @@ cd into the rosa-fsx/fsx directory
 == Provision FSx for ONTAP [[provision_fsx]]
 
 We will create a single-AZ FSx for ONTAP file system in the same VPC as the ROSA cluster.
-
 
 From the bastion, run the following command.  
 
@@ -56,6 +55,7 @@ aws ec2 describe-subnets --query 'Subnets[*].{SubnetId:SubnetId,VpcId:VpcId,Cidr
 
 Output:
 
+[listing]
 ----
 -------------------------------------------------------------------------
 |                             DescribeSubnets                           |
@@ -136,7 +136,18 @@ We will be installing the Trident CSI driver in the Openshift “trident” name
 oc create ns trident
 ----
 
-Next, download the Trident CSI driver from git:
+Verify the namespace was created
+
+[source, bash]
+----
+oc get ns tident
+----
+[listing]
+NAME      STATUS   AGE
+trident   Active   1h
+
+
+Next, download the Trident CSI driver from github:
 
 [source,shell]
 ----
@@ -166,8 +177,16 @@ Run the following command to verify the Trident driver installation.
 ----
 helm status trident -n trident
 ----
-
-image::images/trident_installation.png[igure 3 – Trident installation status]]
+[listing]
+----
+NAME: trident
+LAST DEPLOYED: Mon Nov  6 20:52:31 2023
+NAMESPACE: trident
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES: ...truncated...
+----
 
 === Create secret to store the SVM username and password in ROSA cluster
 
@@ -189,7 +208,7 @@ stringData:
   password: Rosa12345
 ----
 
-image:images/svm_secrets_manager.png[SVM Secrets Manager]
+\\ image:images/svm_secrets_manager.png[SVM Secrets Manager]
 
 Add the secrets to the ROSA cluster with the following command:
 
@@ -222,7 +241,7 @@ NOTE: `ManagementLIF` and `DataLIF` IP Addresses can be found via the Amazon FSx
 
 image::images/smv1.png[]
 
-Now let’s execute the following commands in the terminal to configure the Trident backend in our ROSA cluster.
+Next execute the following commands in the terminal to configure the Trident backend in the ROSA cluster.
 
 [source,shell]
 ----
@@ -236,11 +255,16 @@ Verify the backend configuration.
 ----
 oc get tbc -n trident
 ----
+[listing]
+----
+NAME                    BACKEND NAME   BACKEND UUID                           PHASE   STATUS
+backend-fsx-ontap-nas   fsx-ontap      1f490bf3-492c-4ef7-899e-9e7d8711c82f   Bound   Success
+----
 
-After successful configuration of the trident backend, we will create a storage class that will use the backend we created above
+After successful configuration of the trident backend, you will create a storage class that will use the backend created above
 
 === Create storage class in ROSA cluster
-Now, let’s create the storage class.
+Now, create the storage class.
 
 [source,shell]
 ----
@@ -251,12 +275,17 @@ Verify the status of the trident-csi storage class creation.
 
 [source,shell]
 ----
-oc get sc
+oc get sc | awk '/NAME|trident-csi/'
+----
+[listing]
+----
+NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+trident-csi     csi.trident.netapp.io   Retain          Immediate              true                   1h58m
 ----
 
 This completes installation of Trident CSI driver and its connectivity to FSx for ONTAP file system. Now we’ll deploy a sample MySQL stateful application on ROSA using file volumes in FSx for ONTAP.
 
-NOTE: If you want to verify applications can create PV using trident operator, create PVC using the `pvc-trident.yml` file provided in `fsx` folder.
+NOTE: If you want to verify applications can create a PV using the trident operator, create a PVC using the `pvc-trident.yml` file provided in `fsx` folder.
 
 == Deploy sample MySQL stateful application [[deploy_mysql]]
 
