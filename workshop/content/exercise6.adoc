@@ -1,5 +1,0 @@
-[[FSx-Snapshots]]
-=== FSx for ONTAP snapshots
-FSx for ONTAP supports snapshots, which are point-in-time read-only images of your volumes that consume minimal space and can be created near-instantly. You can use snapshots to create online backups of your data that are stored within the volume itself.
-
-Check out the blog link:https://aws.amazon.com/blogs/storage/run-containerized-applications-efficiently-using-amazon-fsx-for-netapp-ontap-and-amazon-eks/[“Run containerized applications efficiently using Amazon FSx for NetApp ONTAP and Amazon EKS”] to backup and restore data persistent volumes with FSx for ONTAP. We will walk through how to leverage the FSx for ONTAP snapshot feature to instantly restore data on ROSA cluster.
