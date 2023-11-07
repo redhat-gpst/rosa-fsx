@@ -361,6 +361,7 @@ Verify the PVCs are created by the MySQL application.
 oc get pvc -n mysql
 ----
 [listing]
+----
 NAME                      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 mysql-store-mysql-set-0   Bound    pvc-676d059c-1480-4e36-963e-2249efc70331   10Gi       RWX            trident-csi    4h4m
 mysql-store-mysql-set-1   Bound    pvc-073c6a8c-27ab-42f0-b520-74ea90e2d66d   10Gi       RWX            trident-csi    4h4m
