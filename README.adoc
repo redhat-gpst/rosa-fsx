@@ -84,6 +84,8 @@ Run the following command to assign the VpcId to VPCID
    --output json | jq -r '.[0]')
 ----
 
+Run the following command to create the stack
+
 [source,shell]
 ----
     aws cloudformation create-stack \
