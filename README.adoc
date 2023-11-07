@@ -108,7 +108,10 @@ Verify your file system and storage virtual machine (SVM) has been created using
 
 image::images/stack_volume_detailed.png[]
 
-In order to use the `oc` command, you must first login.  
+
+== Install and configure the Trident CSI driver for ROSA [[config_trident]]
+
+In order to use the `oc` command, you may have to first login.  
 
 Visit the OCP Web UI for the API URL.  Then use the API URL to login.
 
@@ -116,17 +119,15 @@ Example:
 
 [source, bash]
 ----
-rosa@bastion fsx]$ oc login https://api.rosa-6slmk.qkm6.p1.openshiftapps.com:6443
+[rosa@bastion]$ oc login https://api.rosa-6slmk.qkm6.p1.openshiftapps.com:6443
 You must obtain an API token by visiting https://oauth-openshift.apps.rosa-6slmk.qkm6.p1.openshiftapps.com/oauth/token/request
 
-[rosa@bastion fsx]$ oc login --token=sha256~Bt3c-m2dTmmHqGlo-xxxxxxxxxxxxxxxxxxxxxxxx --server=https://api.rosa-6slmk.qkm6.p1.openshiftapps.com:6443
+[rosa@bastion]$ oc login --token=sha256~Bt3c-m2dTmmHqGlo-xxxxxxxxxxxxxxxxxxxxxxxx --server=https://api.rosa-6slmk.qkm6.p1.openshiftapps.com:6443
 
 Logged into "https://api.rosa-6slmk.qkm6.p1.openshiftapps.com:6443" as "cluster-admin" using the token provided.
 
 You have access to 100 projects, the list has been suppressed. You can list all projects with 'oc projects'
 ----
-
-== Install and configure the Trident CSI driver for ROSA [[config_trident]]
 
 We will be installing the Trident CSI driver in the Openshift “trident” namespace. 
 
