@@ -200,10 +200,8 @@ To verify the secrets have been added to the ROSA cluster, run the following com
 
 [source, bash]
 ----
-oc get secrets -n trident | awk '/NAME|backend-fsx-ontap-nas-secret/'
-----
-[source,plaintext]
-----
+$ oc get secrets -n trident | awk '/NAME|backend-fsx-ontap-nas-secret/'
+
 NAME                                 TYPE                                  DATA   AGE
 backend-fsx-ontap-nas-secret         Opaque                                2      24h
 ----
