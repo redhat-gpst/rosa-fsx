@@ -68,7 +68,7 @@ Output:
 +----------------+----------------------------+-------------------------+
 ----
 
-Run the following command to assign the SubnetID to SUBNETID
+Run the following command to assign the SubnetId to SUBNETID
 
 [source,bash]
 ----
@@ -76,7 +76,7 @@ Run the following command to assign the SubnetID to SUBNETID
    --output json | jq -r '.[0]')
 ----
 
-Run the following command to assign the VpcID to VPCID
+Run the following command to assign the VpcId to VPCID
 
 [source,bash]
 ----
@@ -84,13 +84,8 @@ Run the following command to assign the VpcID to VPCID
    --output json | jq -r '.[0]')
 ----
 
-
-NOTE: You can monitor the progress of the stack creation from AWS Console -> CloudFormation -> Stacks -> ROSA-FSXONTAP
-
 [source,shell]
-
 ----
-
     aws cloudformation create-stack \
         --stack-name ROSA-FSXONTAP \
         --template-body file://./FSxONTAP.yml \
@@ -105,7 +100,7 @@ NOTE: You can monitor the progress of the stack creation from AWS Console -> Clo
         ParameterKey=SvmAdminPassword,ParameterValue=Rosa12345 \
         --capabilities CAPABILITY_NAMED_IAM
 ----
-
+NOTE: You can monitor the progress of the stack creation from AWS Console -> CloudFormation -> Stacks -> ROSA-FSXONTAP
 
 Verify your file system and storage virtual machine (SVM) has been created using the Amazon FSx console. 
 
