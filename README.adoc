@@ -198,10 +198,12 @@ oc apply -f svm_secret.yml
 
 To verify the secrets have been added to the ROSA cluster, run the following command.
 
-[listing]
+[source,bash]
 ----
 oc get secrets -n trident | awk '/NAME|backend-fsx-ontap-nas-secret/'
-
+----
+[listing]
+----
 NAME                                 TYPE                                  DATA   AGE
 backend-fsx-ontap-nas-secret         Opaque                                2      24h
 ----
