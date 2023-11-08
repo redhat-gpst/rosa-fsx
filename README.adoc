@@ -12,7 +12,7 @@ Once you have the lab environment ready,  SSH into the bastion and follow the st
 
 Steps: 
 
-  . <<clone_github,Clone GitHub repository>>
+  . <<clone_github,clone-github-repository>
   . <<#provision_fsx>>
   . <<#config_trident>>
   . <<#deploy_mysql>>
