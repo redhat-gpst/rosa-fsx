@@ -12,14 +12,14 @@ Once you have the lab environment ready,  SSH into the bastion and follow the st
 
 Steps: 
 
-  . <<clone_github,clone-github-repository>
+  . <<clone-github-repository>>
   . <<#provision_fsx>>
   . <<#config_trident>>
   . <<#deploy_mysql>>
   . <<#scale_mysql_pods>>
   . <<#backup_restore>>
 
-[[clone_github]]
+[[clone-github-repository]]
 == Clone GitHub repository 
 
 You will need Git to clone the github repository - https://github.com/redhat-gpst/rosa-fsx.git
