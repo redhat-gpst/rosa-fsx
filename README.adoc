@@ -12,8 +12,8 @@ Once you have the lab environment ready,  SSH into the bastion and follow the st
 
 Steps: 
 
-  . <<clone-github-repository>>
-  . <<provision-fsx-for-ontap>>
+  . <<clone-github-repository, Clone GitHub Repository>>
+  . <<provision-fsx-for-ontap, Provision FSx for ONTAP>>
   . <<install-and-configure-the-trident-csi-driver-for-rosa>>
   . <<deploy-sample-mysql-stateful-application>>
   . <<scale-mysql-application-pods>>
