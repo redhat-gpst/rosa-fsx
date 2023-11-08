@@ -13,11 +13,11 @@ Once you have the lab environment ready,  SSH into the bastion and follow the st
 Steps: 
 
   . <<clone-github-repository>>
-  . <<provision-fsx>>
-  . <<config-trident>>
-  . <<deploy-mysql>>
-  . <<scale-mysql-pods>>
-  . <<backup-restore>>
+  . <<provision-fsx-for-ontap>>
+  . <<install-and-configure-the-trident-csi-driver-for-rosa>>
+  . <<deploy-sample-mysql-stateful-application>>
+  . <<scale-mysql-application-pods>>
+  . <<backup-and-restore-with-snapshots>>
 
 
 [[clone-github-repository]]
