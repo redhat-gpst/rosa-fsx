@@ -13,11 +13,12 @@ Once you have the lab environment ready,  SSH into the bastion and follow the st
 Steps: 
 
   . <<clone-github-repository>>
-  . <<#provision_fsx>>
-  . <<#config_trident>>
-  . <<#deploy_mysql>>
-  . <<#scale_mysql_pods>>
-  . <<#backup_restore>>
+  . <<provision-fsx>>
+  . <<config-trident>>
+  . <<deploy-mysql>>
+  . <<scale-mysql-pods>>
+  . <<backup-restore>>
+
 
 [[clone-github-repository]]
 == Clone GitHub repository 
@@ -41,7 +42,8 @@ cd into the rosa-fsx/fsx directory
 cd ~/rosa-fsx/fsx
 ----
 
-== Provision FSx for ONTAP [[provision_fsx]]
+[[provision-fsx]]
+== Provision FSx for ONTAP 
 
 We will create a single-AZ FSx for ONTAP file system in the same VPC as the ROSA cluster.
 
@@ -108,8 +110,8 @@ Verify your file system and storage virtual machine (SVM) has been created using
 
 image::images/stack_volume_detailed.png[]
 
-
-== Install and configure the Trident CSI driver for ROSA [[config_trident]]
+[[config-trident]]
+== Install and configure the Trident CSI driver for ROSA 
 
 In order to use the `oc` command, you may have to first login.  
 
@@ -227,6 +229,7 @@ NAME                                 TYPE                                  DATA 
 backend-fsx-ontap-nas-secret         Opaque                                2      24h
 ----
 
+
 === Install and Configure Trident CSI backend to FSx for ONTAP
 
 The Trident backend configuration tells Trident how to communicate with the storage system (in this case, FSx for ONTAP). We’ll use the ontap-nas driver to provision storage volumes.
@@ -309,7 +312,8 @@ Next, we will deploy a sample MySQL stateful application on ROSA using file volu
 
 NOTE: If you want to verify applications can create a PV using the trident operator, create a PVC using the `pvc-trident.yml` file provided in `fsx` folder.
 
-== Deploy sample MySQL stateful application [[deploy_mysql]]
+[[deploy-mysql]]
+== Deploy sample MySQL stateful application 
 
 In this section, we will deploy the highly available MySQL application onto the ROSA cluster using a Kubernetes StatefulSet and have the PersistentVolume provisioned by Trident. Kubernetes StatefulSet ensures the original PersistentVolume (PV) is mounted on the same pod identity when its rescheduled again to retain data integrity and consistency. For more information about the MySQL application replication configuration, please refer to the link:https://dev.mysql.com/doc/refman/8.0/en/replication.html[MySQL Official document].
 
@@ -453,8 +457,8 @@ MySQL [(none)]> select * from erp.Persons;
 Type `exit` to exit the mysql server and `exit` again to exit the pod.  You should now be back at the bastion prompt
 
 
-
-=== Scale MySQL application pods [[scale_mysql_pods]]
+[[scale-mysql-pods]]
+=== Scale MySQL application pods 
 
 You can easily scale the MySQL StatefulSet application using the following command.
 
@@ -480,7 +484,8 @@ mysql-set-3   1/1     Running   0          5h35m
 
 This demonstrates the horizontal scaling of Statefulset pods.
 
-== Backup and Restore with Snapshots [[backup_restore]]
+[[backup-restore]]
+== Backup and Restore with Snapshots
 
 FSx for ONTAP supports snapshots, which are point-in-time read-only images of your volumes that consume minimal space and can be created near-instantly. You can use snapshots to create online backups of your data that are stored within the volume itself.
 
