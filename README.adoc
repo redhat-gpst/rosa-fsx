@@ -12,15 +12,15 @@ Once you have the lab environment ready,  SSH into the bastion and follow the st
 
 Steps: 
 
-  . <<#clone_github>>
+  . <<clone_github>>
   . <<#provision_fsx>>
   . <<#config_trident>>
   . <<#deploy_mysql>>
   . <<#scale_mysql_pods>>
   . <<#backup_restore>>
 
-
-== Clone GitHub repository [[clone_github]]
+[[clone_github]]
+== Clone GitHub repository 
 
 You will need Git to clone the github repository - https://github.com/redhat-gpst/rosa-fsx.git
 
@@ -38,7 +38,7 @@ cd into the rosa-fsx/fsx directory
 
 [source,shell]
 ----
-    cd ~/rosa-fsx/fsx
+cd ~/rosa-fsx/fsx
 ----
 
 == Provision FSx for ONTAP [[provision_fsx]]
@@ -399,7 +399,7 @@ mysql   ClusterIP   None         <none>        3306/TCP   4h3m
 
 === Create MySQL client for MySQL
 
-The MySQL client is for us to access the MySQL applications that we just deployed. Review the content mysql-client.yml. Deploy MySQL client using the following command.
+The MySQL client is for us to access the MySQL applications that we just deployed. Review the content `mysql-client.yml``. Deploy MySQL client using the following command.
 
 [source,shell]
 ----
@@ -436,13 +436,12 @@ mysql -u root -p -h mysql-set-0.mysql.mysql.svc.cluster.local
 
 Enter the password that is stored in the mysql-secrets.yml. Once connected, Create a database on the MySQL database.
 
-[source,sql]
+[source,listing]
 ----
 MySQL [(none)]> CREATE DATABASE erp;
 MySQL [(none)]> CREATE TABLE erp.Persons ( ID int, FirstName varchar(255),Lastname varchar(255)); 
 MySQL [(none)]> INSERT INTO erp.Persons (ID, FirstName, LastName) values (1234 , "John" , "Doe");
 MySQL [(none)]> commit;
-
 MySQL [(none)]> select * from erp.Persons;
 +------+-----------+----------+
 | ID | FirstName | Lastname |
@@ -469,6 +468,14 @@ Check the number of pods running using this command. You may have to run it mult
 [source,shell]
 ----
 oc get pods -n mysql
+----
+[listing]
+----
+NAME          READY   STATUS    RESTARTS   AGE
+mysql-set-0   1/1     Running   0          5h43m
+mysql-set-1   1/1     Running   0          5h43m
+mysql-set-2   1/1     Running   0          5h42m
+mysql-set-3   1/1     Running   0          5h35m
 ----
 
 This demonstrates the horizontal scaling of Statefulset pods.
