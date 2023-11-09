@@ -515,17 +515,12 @@ Next, create a snapshot of the exising MySQl data
   oc apply -f volume-snapshot.yml
 ----
 
-[source,bash]
-----
 Use the following to find the name of the snapshot.
+
 [source, bash]
 ----
 oc get volumesnapshots | grep snap |tr -s " " |cut -d " " -f6
 ----
-
-
-
-
 
 == Delete the database "erp"
 
