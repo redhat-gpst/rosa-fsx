@@ -123,23 +123,23 @@ Open the web terminal from the shortcut on the upper right corner of the Console
 
 == Install and configure the Trident CSI driver for ROSA 
 
-In order to use the `oc` command, you may have to first login.  
+// In order to use the `oc` command, you may have to first login.  
 
-Visit the OCP Web UI for the API URL.  Then use the API URL to login.
+// Visit the OCP Web UI for the API URL.  Then use the API URL to login.
 
-Example:
+// Example:
 
-[source, bash]
-----
-[rosa@bastion]$ oc login https://api.rosa-6slmk.qkm6.p1.openshiftapps.com:6443
-You must obtain an API token by visiting https://oauth-openshift.apps.rosa-6slmk.qkm6.p1.openshiftapps.com/oauth/token/request
+// [source, bash]
+// ----
+// [rosa@bastion]$ oc login https://api.rosa-6slmk.qkm6.p1.openshiftapps.com:6443
+// You must obtain an API token by visiting https://oauth-openshift.apps.rosa-6slmk.qkm6.p1.openshiftapps.com/oauth/token/request
 
-[rosa@bastion]$ oc login --token=sha256~Bt3c-m2dTmmHqGlo-xxxxxxxxxxxxxxxxxxxxxxxx --server=https://api.rosa-6slmk.qkm6.p1.openshiftapps.com:6443
+// [rosa@bastion]$ oc login --token=sha256~Bt3c-m2dTmmHqGlo-xxxxxxxxxxxxxxxxxxxxxxxx --server=https://api.rosa-6slmk.qkm6.p1.openshiftapps.com:6443
 
-Logged into "https://api.rosa-6slmk.qkm6.p1.openshiftapps.com:6443" as "cluster-admin" using the token provided.
+// Logged into "https://api.rosa-6slmk.qkm6.p1.openshiftapps.com:6443" as "cluster-admin" using the token provided.
 
-You have access to 100 projects, the list has been suppressed. You can list all projects with 'oc projects'
-----
+// You have access to 100 projects, the list has been suppressed. You can list all projects with 'oc projects'
+// ----
 
 We will be installing the Trident CSI driver in the Openshift “trident” namespace. 
 
