@@ -6,4 +6,4 @@ metadata:
 spec:
   volumeSnapshotClassName: fsx-snapclass
   source:
-    persistentVolumeClaimName: mysql-volume
+    persistentVolumeClaimName: mysql-store-mysql-set-0
