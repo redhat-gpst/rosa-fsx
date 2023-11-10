@@ -556,7 +556,7 @@ Remember, before deleting any database, ensure that you have a proper backup of 
 
 To restore the volume with the snapshot that you created earlier, follow these steps:
 
-HINT: The password for the SVM is `Rosa1245`
+TIP: The password for the SVM is `Rosa1245`
 
 [source,bash]
 ----
