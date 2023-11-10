@@ -515,11 +515,11 @@ Next, create a snapshot of the exising MySQl data
   oc apply -f volume-snapshot.yml
 ----
 
-Use the following to find the name of the snapshot.
+Use the following to find the name of the snapshot. You will need this in a later step
 
 [source, bash]
 ----
-oc get volumesnapshots | grep snap |tr -s " " |cut -d " " -f6
+oc get volumesnapshots -n mysql | grep snap |tr -s " " |cut -d " " -f6
 ----
 
 == Delete the database "erp"
@@ -552,21 +552,24 @@ Query OK, 1 row affected
 
 Remember, before deleting any database, ensure that you have a proper backup of the data and are certain that you want to proceed with the deletion.
 
-=== Restore the snapshot `backup_point_01` from SVM
+=== Restore the snapshot from SVM
 
-To restore the volume with the snapshot `backup_point_01` that you created earlier, follow these steps:
+To restore the volume with the snapshot that you created earlier, follow these steps:
 
-Use the web-terminal to SSH into the SVM
-
-// add screenshot for web term
-
-Make sure to replace `trident_pvc_81731fc1_7e84_4f4f_9525_fb16125aeba0` with the actual volume name you want to restore.
+HINT: The password for the SVM is `Rosa1245`
 
 [source,bash]
 ----
-SVM1::> snap restore -volume trident_pvc_81731fc1_7e84_4f4f_9525_fb16125aeba0 -snapshot backup_point_01
+export SVMIP=$(cat ~/rosa-fsx/fsx/backend-ontap-nas.yml | grep managementLIF | awk '{print $2}')
+ssh -o StrictHostKeyChecking=no vsadmin@$SVMIP
 ----
 
+Make sure to replace `snapcontent-beeefed7-634a-4988-82bc-aa7ac793fa97` with the actual volume name you want to restore.
+
+[source,bash]
+----
+SVM1::> snap restore -volume trident_pvc_8911fe58_5647_4f99_8d9e_9e92c9cd838a -snapshot snapcontent-beeefed7-634a-4988-82bc-aa7ac793fa970 
+----
 
 
 This command will restore the volume with the contents from the `backup_point_01` snapshot.
