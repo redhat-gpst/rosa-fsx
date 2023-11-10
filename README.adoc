@@ -141,6 +141,15 @@ Open the web terminal from the shortcut on the upper right corner of the Console
 // You have access to 100 projects, the list has been suppressed. You can list all projects with 'oc projects'
 // ----
 
+Clone the git repository into the web-terminal and cd into the ros-fsx/fsx directory
+
+[source,bash]
+----
+git clone https://github.com/redhat-gpst/rosa-fsx.git
+cd ~/rosa-fsx/fsx
+----
+
+
 We will be installing the Trident CSI driver in the Openshift “trident” namespace. 
 
 [source,shell]
@@ -152,7 +161,7 @@ Verify the namespace was created
 
 [source, bash]
 ----
-oc get ns tident
+oc get ns trident
 ----
 [listing]
 NAME      STATUS   AGE
