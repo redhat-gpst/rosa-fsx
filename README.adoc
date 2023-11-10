@@ -385,6 +385,12 @@ Verify the application deployment.
 oc get pods -n mysql
 ----
 
+[listing]
+----
+NAME                                         READY   STATUS    RESTARTS   AGE
+mysql-client                                 1/1     Running   0          57s
+----
+
 Verify the PVCs are created by the MySQL application.
 
 [source,shell]
@@ -509,6 +515,8 @@ This demonstrates the horizontal scaling of Statefulset pods.
 FSx for ONTAP supports snapshots, which are point-in-time read-only images of your volumes that consume minimal space and can be created near-instantly. You can use snapshots to create online backups of your data that are stored within the volume itself.
 
 cd into the fsx directory
+[srouce,bash]
+cd ~/rosa-fsx/fsx
 
 Create the volume snapshot class
 
