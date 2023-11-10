@@ -102,7 +102,7 @@ aws cloudformation create-stack \
      ParameterKey=SvmAdminPassword,ParameterValue=Rosa12345 \
   --capabilities CAPABILITY_NAMED_IAM
 ----
-NOTE: This can take 20 - 30 minutes. You can monitor the progress of the stack creation from AWS Console -> CloudFormation -> Stacks -> ROSA-FSXONTAP
+NOTE: This can take 20 - 30 minutes. You can monitor the progress of the stack creation from AWS Console -> CloudFormation -> Stacks -> ROSA-FSXONTAP -> Events
 
 Verify your file system and storage virtual machine (SVM) has been created using the Amazon FSx console. 
 
@@ -257,7 +257,7 @@ To get started, make sure you are in the `fsx` directory.
 
 [source,bash]
 ----
-cd ~/rosa/fsx
+cd ~/rosa-fsx/fsx
 ----
 
 We are going to edit `backend-ontap-nas.yml` so it has the IP from the ManagementLIF and DataLIF IP addresses.
