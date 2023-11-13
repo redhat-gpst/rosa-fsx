@@ -483,31 +483,31 @@ Type `exit` to exit the mysql server and `exit` again to exit the pod.  You shou
 
 
 [[scale-mysql-pods]]
-=== Scale MySQL application pods 
+// === Scale MySQL application pods 
 
-You can easily scale the MySQL StatefulSet application using the following command.
+// You can easily scale the MySQL StatefulSet application using the following command.
 
-[source,shell]
-----
-oc scale statefulsets mysql-set --replicas=4 -n mysql
-----
+// [source,shell]
+// ----
+// oc scale statefulsets mysql-set --replicas=4 -n mysql
+// ----
 
-Check the number of pods running using this command. You may have to run it multiple times while the additional pods start.
+// Check the number of pods running using this command. You may have to run it multiple times while the additional pods start.
 
-[source,shell]
-----
-oc get pods -n mysql
-----
-[listing]
-----
-NAME          READY   STATUS    RESTARTS   AGE
-mysql-set-0   1/1     Running   0          5h43m
-mysql-set-1   1/1     Running   0          5h43m
-mysql-set-2   1/1     Running   0          5h42m
-mysql-set-3   1/1     Running   0          5h35m
-----
+// [source,shell]
+// ----
+// oc get pods -n mysql
+// ----
+// [listing]
+// ----
+// NAME          READY   STATUS    RESTARTS   AGE
+// mysql-set-0   1/1     Running   0          5h43m
+// mysql-set-1   1/1     Running   0          5h43m
+// mysql-set-2   1/1     Running   0          5h42m
+// mysql-set-3   1/1     Running   0          5h35m
+// ----
 
-This demonstrates the horizontal scaling of Statefulset pods.
+// This demonstrates the horizontal scaling of Statefulset pods.
 
 [[backup-restore]]
 == Backup and Restore with Snapshots
@@ -548,7 +548,10 @@ Log into the container console using a new terminal. Please note that this is no
 [source,bash]
 ----
 oc exec --stdin --tty mysql-client -n mysql -- sh
-mysql -u root -p -h mysql-set-0.mysql.mysql.svc.cluster.local
+----
+[source,bash]
+----
+mysql -u root -p -h mysql.mysql.mysql.svc.cluster.local
 ----
 
 You will be prompted to enter the MySQL root password. After entering the password, you'll get into the MySQL command-line interface.
@@ -571,32 +574,32 @@ Remember, before deleting any database, ensure that you have a proper backup of 
 
 === Restore the snapshot from SVM
 
-To restore the volume with the snapshot that you created earlier, follow these steps:
+// To restore the volume with the snapshot that you created earlier, follow these steps:
 
-TIP: The password for the SVM is `Rosa1245`
+// TIP: The password for the SVM is `Rosa1245`
 
-[source,bash]
-----
-export SVMIP=$(cat ~/rosa-fsx/fsx/backend-ontap-nas.yml | grep managementLIF | awk '{print $2}')
-ssh -o StrictHostKeyChecking=no vsadmin@$SVMIP
-----
+// [source,bash]
+// ----
+// export SVMIP=$(cat ~/rosa-fsx/fsx/backend-ontap-nas.yml | grep managementLIF | awk '{print $2}')
+// ssh -o StrictHostKeyChecking=no vsadmin@$SVMIP
+// ----
 
-Make sure to replace `snapcontent-beeefed7-634a-4988-82bc-aa7ac793fa97` with the actual volume name you want to restore.
+// Make sure to replace `snapcontent-beeefed7-634a-4988-82bc-aa7ac793fa97` with the actual volume name you want to restore.
 
-[source,bash]
-----
-SVM1::> snap restore -volume trident_pvc_8911fe58_5647_4f99_8d9e_9e92c9cd838a -snapshot snapcontent-beeefed7-634a-4988-82bc-aa7ac793fa970 
-----
+// [source,bash]
+// ----
+// SVM1::> snap restore -volume trident_pvc_8911fe58_5647_4f99_8d9e_9e92c9cd838a -snapshot snapcontent-beeefed7-634a-4988-82bc-aa7ac793fa970 
+// ----
 
 
-This command will restore the volume with the contents from the `backup_point_01` snapshot.
+// This command will restore the volume with the contents from the `backup_point_01` snapshot.
 
-Remember to verify the restoration to ensure that the volume is restored successfully.
+// Remember to verify the restoration to ensure that the volume is restored successfully.
 
 === Validate the Database Restored Immediately
-Given we just restored the database in 6.3, we will validate the database is restored as expected.
+Given we just restored the database in  we will validate the database is restored as expected.
 
-Go back to the container console in 6.2:
+Go back to the container console 
 
 === Show Databases
 [source,sql]
